@@ -47,8 +47,8 @@ use self::{block::Block, branch::Branch, deserialized::Deserialized, error::Erro
 #[derive(Clone, Eq, PartialEq, Hash, Serialize, Deserialize)]
 #[serde(try_from = "Deserialized")]
 pub struct SecuredLinkedList {
-    root: bls::PublicKey,
-    tree: Vec<Block>,
+    pub root: bls::PublicKey,
+    pub tree: Vec<Block>,
 }
 
 #[allow(clippy::len_without_is_empty)]
