@@ -295,17 +295,23 @@ fn join_with_branches() {
             ],
         );
 
+        println!("\nSTART");
+        dbg!(&main_chain.tree);
         let mut chain = SecuredLinkedList::new(pk0);
         // join from 0 till b11
         let proof_b11 = main_chain.get_proof_chain(&pk0, &b11_pk).unwrap();
+        dbg!(&proof_b11.tree);
         chain.join(proof_b11).unwrap();
         // join from 0 till b0_2
         let proof_b0_2 = main_chain.get_proof_chain(&pk0, &b0_pk2).unwrap();
+        dbg!(&proof_b0_2.tree);
         chain.join(proof_b0_2).unwrap();
         // join from 0 till b10
         let proof_b10 = main_chain.get_proof_chain(&pk0, &b10_pk).unwrap();
+        dbg!(&proof_b10.tree);
         chain.join(proof_b10).unwrap();
 
+        dbg!(&chain.tree);
         assert_eq!(main_chain.len(), chain.len())
     }
 }

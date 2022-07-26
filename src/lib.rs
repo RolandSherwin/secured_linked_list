@@ -98,6 +98,26 @@ impl SecuredLinkedList {
             return Err(Error::InvalidOperation);
         };
 
+        // reduce the other chain (assuming it does not have branches)
+        // find the first unique key's index and generate a proof chain from index-1
+        let other = if let Some(unique_index) = other
+            .tree
+            .iter()
+            .position(|block| !self.keys().any(|key| *key == block.key))
+        {
+            if unique_index == 0 {
+                other
+            } else {
+                let common_key = other.tree[unique_index - 1].key;
+                other.get_proof_chain(&common_key, other.last_key())?
+            }
+        } else {
+            // everything is common, so don't join
+            return Ok(());
+        };
+        println!("insert modified proof: ");
+        dbg!(&other.tree);
+
         let mut reindex_map = vec![0; other.len()];
         reindex_map[0] = root_index;
 
