@@ -10,6 +10,7 @@ use serde::{Deserialize, Serialize};
 use std::cmp::Ordering;
 
 #[derive(Clone, Debug, Eq, PartialEq, Hash, Serialize, Deserialize)]
+// made pub
 pub struct Block {
     pub key: bls::PublicKey,
     pub signature: bls::Signature,
