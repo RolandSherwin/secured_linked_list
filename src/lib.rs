@@ -390,23 +390,29 @@ impl SecuredLinkedList {
     fn insert_block(&mut self, new_block: Block) -> usize {
         // Find the index into `self.tree` to insert the new block at so that the block order as
         // described in the `SecuredLinkedList` doc comment is maintained.
-
-
-        let insert_at = self
+        let same_block = self
             .tree
             .iter()
             .enumerate()
             .skip(new_block.parent_index)
             .find(|(_, block)| {
-                block.parent_index != new_block.parent_index || block.key < new_block.key
+                block.parent_index == new_block.parent_index && block.key == new_block.key
             })
-            .map(|(index, _)| index)
-            .unwrap_or(self.tree.len());
+            .map(|(index, _)| index);
 
-        // let insert_at = self.tree.iter().enumerate().skip(new_block.parent_index).find(|(_, block)| {
-        //     block.key == new_block.key && block.parent_index == new_block.parent_index
-        // }).map(|(index, _)| index).unwrap_or(insert_at);
-
+        let insert_at = match same_block {
+            Some(index) => index,
+            None => self
+                .tree
+                .iter()
+                .enumerate()
+                .skip(new_block.parent_index)
+                .find(|(_, block)| {
+                    block.parent_index != new_block.parent_index || block.key >= new_block.key
+                })
+                .map(|(index, _)| index)
+                .unwrap_or(self.tree.len())
+        };
 
         // If the key already exists in the chain, do nothing but still return success to make the
         // `insert` operation idempotent.
